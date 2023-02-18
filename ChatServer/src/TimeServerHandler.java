@@ -17,12 +17,19 @@ import org.apache.mina.core.write.WriteRequestQueue;
 
 public class TimeServerHandler extends IoHandlerAdapter
 {
+    public TimeServerHandler() {
+
+        allowIp.add("127.0.0.1");
+        allowIp.add("127.0.0.2");
+    }
+
+    private ArrayList<String> allowIp = new ArrayList<String>();
     private final Set<IoSession> sessions = Collections.synchronizedSet(new HashSet());
     public void broadcast(String message, IoSession sentSession) {
         synchronized(this.sessions) {
             Iterator var3 = this.sessions.iterator();
 
-            while(var3.hasNext()) {
+            while(var3.hasNext()){
                 IoSession session = (IoSession)var3.next();
                 if (session.isConnected() && sentSession != session) {
                     session.write(sentSession.getId() + ": " + message + '\n');
@@ -52,7 +59,30 @@ public class TimeServerHandler extends IoHandlerAdapter
     @Override
     public void sessionIdle( IoSession session, IdleStatus status ) throws Exception
     {
+        System.out.println("sessionIdle ");
         System.out.println( "IDLE " + session.getIdleCount( status ));
+        session.write("WARMLY WELCOME");
+
     }
 
+    @Override
+    public void sessionCreated(IoSession session) throws Exception {
+        String clientIP = session.getRemoteAddress().toString().split(":")[0].substring(1);
+        System.out.println("IP " + clientIP + " is connecting ...");
+        if("127.0.0.1".equals(clientIP)) {
+            System.out.println("ALLOW CONNECTION FROM " + clientIP);
+        }
+        System.out.println("sessionCreated " + session.getRemoteAddress().toString());
+
+    }
+
+    @Override
+    public void sessionClosed(IoSession session) throws Exception {
+        System.out.println("sessionClosed ");
+    }
+
+    @Override
+    public void sessionOpened(IoSession session) throws Exception {
+        System.out.println("sessionOpened ");
+    }
 }

@@ -1,6 +1,7 @@
 
   import java.net.InetSocketAddress;
 
+  import com.facenet.mina.codec.XMLCodecFactory;
   import org.apache.mina.core.RuntimeIoException;
   import org.apache.mina.core.future.ConnectFuture;
   import org.apache.mina.core.session.IoSession;
@@ -26,10 +27,6 @@
       private static final boolean USE_CUSTOM_CODEC = true;
 
       public static void main(String[] args) throws Throwable {
-          if (args.length == 0) {
-              System.out.println("Please specify the list of any integers");
-              return;
-          }
 
           // prepare values to sum up
           int[] values = new int[args.length];
@@ -41,6 +38,11 @@
 
           // Configure the service.
           connector.setConnectTimeoutMillis(CONNECT_TIMEOUT);
+//          connector.getFilterChain().addLast(
+//                      "codec",
+//                      new ProtocolCodecFilter(
+//                              new XMLCodecFactory()));
+
           if (USE_CUSTOM_CODEC) {
               connector.getFilterChain().addLast(
                       "codec",
@@ -50,7 +52,7 @@
               connector.getFilterChain().addLast(
                       "codec",
                       new ProtocolCodecFilter(
-                              new ObjectSerializationCodecFactory()));
+                              new XMLCodecFactory()));
           }
           connector.getFilterChain().addLast("logger", new LoggingFilter());
 
@@ -61,6 +63,7 @@
               try {
                   ConnectFuture future = connector.connect(new InetSocketAddress(
                           HOSTNAME, PORT));
+                  System.out.println("Connect to server " + HOSTNAME + " and PORT " + PORT);
                   future.awaitUninterruptibly();
                   session = future.getSession();
                   break;

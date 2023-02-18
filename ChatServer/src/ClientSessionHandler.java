@@ -1,5 +1,6 @@
 import org.apache.mina.core.service.IoHandler;
 import org.apache.mina.core.service.IoHandlerAdapter;
+import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.example.sumup.message.AddMessage;
 import org.apache.mina.example.sumup.message.ResultMessage;
@@ -18,16 +19,32 @@ public class ClientSessionHandler extends IoHandlerAdapter {
         }
         @Override
         public void sessionOpened(IoSession session) {
-        // send summation requests
-        for (int i = 0; i < values.length; i++) {
-            AddMessage m = new AddMessage();
-            m.setSequence(i);
-            m.setValue(values[i]);
-            session.write(m);
+            System.out.println("sessionOpened ");
+            // send summation requests
+            for (int i = 0; i < values.length; i++) {
+                AddMessage m = new AddMessage();
+                m.setSequence(i);
+                m.setValue(values[i]);
+                session.write(m);
+            }
         }
-        }
+
+        @Override
+    public void sessionCreated(IoSession session) throws Exception {
+            System.out.println("sessionCreated ");
+    }
+
+    @Override
+    public void sessionClosed(IoSession session) throws Exception {
+        System.out.println("sessionClosed ");
+    }
+    @Override
+    public void sessionIdle(IoSession session, IdleStatus status) throws Exception {
+        System.out.println("sessionIdle ");
+    }
         @Override
         public void messageReceived(IoSession session, Object message) {
+            System.out.println("messageReceived ");
               // server only sends ResultMessage. otherwise, we will have to identify
                  // its type using instanceof operator.
                   ResultMessage rm = (ResultMessage) message;
