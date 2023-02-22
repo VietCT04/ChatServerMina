@@ -1,12 +1,9 @@
-import org.apache.mina.core.service.IoHandler;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.example.sumup.message.AddMessage;
-import org.apache.mina.example.sumup.message.ResultMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
 public class ClientSessionHandler extends IoHandlerAdapter {
     private final static Logger LOGGER = LoggerFactory.getLogger(ClientSessionHandler.class);

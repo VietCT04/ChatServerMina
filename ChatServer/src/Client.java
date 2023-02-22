@@ -13,10 +13,10 @@ import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
 /**
- 34   * (<strong>Entry Point</strong>) Starts SumUp client.
- 35   *
- 36   * @author <a href="http://mina.apache.org">Apache MINA Project</a>
- 37   */
+ *
+ *
+ * @author VietCT
+ */
 public class Client {
     private static final String HOSTNAME = "localhost";
 
@@ -39,6 +39,9 @@ public class Client {
 
         // Configure the service.
         connector.setConnectTimeoutMillis(CONNECT_TIMEOUT);
+
+        // 0 when using XMLCodecFactory
+        // 1 when using TextLineCodecFactory
         int using = 0;
         if (using == 0) {
             connector.getFilterChain().addLast(
@@ -76,12 +79,13 @@ public class Client {
                 Thread.sleep(5000);
             }
         }
-        System.out.println("???");
+
+        // Listener to client message
         Scanner in = new Scanner(System.in);
         while (true){
             String message = in.nextLine();
             session.write(message);
-            if (message == "15615") break;
+            if (message == "/quit") break;
         }
         session.getCloseFuture().awaitUninterruptibly();
 
