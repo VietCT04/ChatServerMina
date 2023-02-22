@@ -46,11 +46,9 @@ public class TimeServerHandler extends IoHandlerAdapter
     @Override
     public void messageReceived( IoSession session, Object message ) throws Exception
     {
+        System.out.println("message Received: " + message);
         String str = message.toString();
-        if( str.trim().equalsIgnoreCase("quit") ) {
-            session.close();
-            return;
-        }
+        System.out.println(str);
         Date date = new Date();
         session.write( date.toString() );
         sessions.add(session);
@@ -59,10 +57,7 @@ public class TimeServerHandler extends IoHandlerAdapter
     @Override
     public void sessionIdle( IoSession session, IdleStatus status ) throws Exception
     {
-        System.out.println("sessionIdle ");
         System.out.println( "IDLE " + session.getIdleCount( status ));
-        session.write("WARMLY WELCOME");
-
     }
 
     @Override

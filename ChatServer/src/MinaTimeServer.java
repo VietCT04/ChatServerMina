@@ -17,10 +17,14 @@ public class MinaTimeServer {
 
         IoAcceptor acceptor = new NioSocketAcceptor();
         acceptor.getFilterChain().addLast("logger", new LoggingFilter());
-//        acceptor.getFilterChain().addLast("codec",
-//                new ProtocolCodecFilter(new TextLineCodecFactory(Charset.forName("UTF-8"))));
-        acceptor.getFilterChain().addLast("codec",
-                new ProtocolCodecFilter(new XMLCodecFactory()));
+        int using = 0;
+        if (using == 1) {
+            acceptor.getFilterChain().addLast("codec",
+                    new ProtocolCodecFilter(new TextLineCodecFactory(Charset.forName("UTF-8"))));
+        } else {
+            acceptor.getFilterChain().addLast("codec",
+                    new ProtocolCodecFilter(new XMLCodecFactory()));
+        }
         acceptor.setHandler(new TimeServerHandler());
         acceptor.getSessionConfig().setReadBufferSize(2048);
         acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
