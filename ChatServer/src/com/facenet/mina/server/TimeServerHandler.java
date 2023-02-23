@@ -1,8 +1,15 @@
+package com.facenet.mina.server;
+
 import java.util.*;
 
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
+
+/**
+ *
+ * @author VietCT
+ */
 
 public class TimeServerHandler extends IoHandlerAdapter
 {
@@ -17,6 +24,12 @@ public class TimeServerHandler extends IoHandlerAdapter
 
     private HashMap<String,Integer> ipOccurrence = new HashMap<String, Integer>();
     private final Set<IoSession> sessions = Collections.synchronizedSet(new HashSet());
+
+    /**
+     * To broadcast a message to all session connected to server
+     * @param message
+     * @param sentSession
+     */
     public void broadcast(String message, IoSession sentSession) {
         synchronized(this.sessions) {
             Iterator var3 = this.sessions.iterator();
@@ -30,11 +43,18 @@ public class TimeServerHandler extends IoHandlerAdapter
 
         }
     }
+
     @Override
     public void exceptionCaught( IoSession session, Throwable cause ) throws Exception
     {
         cause.printStackTrace();
     }
+
+    /**
+     * invoked when received a message
+     * @param session
+     * @param message
+     */
     @Override
     public void messageReceived( IoSession session, Object message ) throws Exception
     {
@@ -45,12 +65,23 @@ public class TimeServerHandler extends IoHandlerAdapter
         session.write( date.toString() );
         broadcast(str, session);
     }
+
+    /**
+     * invoked when session in idle status
+     * @param session
+     * @param status
+     */
     @Override
     public void sessionIdle( IoSession session, IdleStatus status ) throws Exception
     {
         System.out.println( "IDLE " + session.getIdleCount( status ));
     }
-    public boolean checkValidIP(String ip){
+
+    /**
+     * Check if the ip connecting to server valid or not
+     * @param ip
+     */
+    public boolean isValidIP(String ip){
         boolean isValid = false;
         for (int i = 0; i < allowIp.size(); i++) {
             if (allowIp.get(i).equals(ip)) {
@@ -64,11 +95,15 @@ public class TimeServerHandler extends IoHandlerAdapter
         }
         return isValid;
     }
+    /**
+     * invoked when a session try to connect to the server
+     * @param session
+     */
     @Override
     public void sessionCreated(IoSession session) throws Exception {
         String clientIP = session.getRemoteAddress().toString().split(":")[0].substring(1);
         System.out.println("IP " + clientIP + " is connecting ...");
-        if(checkValidIP(clientIP)) {
+        if(isValidIP(clientIP)) {
             System.out.println("ALLOW CONNECTION FROM " + clientIP);
             System.out.println("sessionCreated " + session.getRemoteAddress().toString());
             sessions.add(session);
@@ -86,11 +121,13 @@ public class TimeServerHandler extends IoHandlerAdapter
 
     }
 
+    // This method invoked when close a session (IoSession)
     @Override
     public void sessionClosed(IoSession session) throws Exception {
         System.out.println("sessionClosed ");
     }
 
+    // This method invoked when a session opened (IoSession)
     @Override
     public void sessionOpened(IoSession session) throws Exception {
         System.out.println("sessionOpened ");

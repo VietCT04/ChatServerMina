@@ -4,8 +4,18 @@ import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolEncoder;
 import org.apache.mina.filter.codec.ProtocolEncoderOutput;
+/**
+ *
+ * @author VietCT
+ */
 
 public class XMLEncoder implements ProtocolEncoder {
+    /**
+     * invoked when sent a message
+     * @param ioSession
+     * @param message
+     * @param protocolEncoderOutput
+     */
     @Override
     public void encode(IoSession ioSession, Object message, ProtocolEncoderOutput protocolEncoderOutput) throws Exception {
 

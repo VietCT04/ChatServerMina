@@ -5,7 +5,18 @@ import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolDecoder;
 import org.apache.mina.filter.codec.ProtocolDecoderOutput;
 
+/**
+ *
+ * @author VietCT
+ */
+
 public class XMLDecoder implements ProtocolDecoder {
+    /**
+     * invoked when a receive a message
+     * @param ioSession
+     * @param ioBuffer
+     * @param protocolDecoderOutput
+     */
     @Override
     public void decode(IoSession ioSession, IoBuffer ioBuffer, ProtocolDecoderOutput protocolDecoderOutput) throws Exception {
         System.out.println("Message in: ");
@@ -19,6 +30,7 @@ public class XMLDecoder implements ProtocolDecoder {
         String responseMsg = data.substring(10, data.indexOf("</response>"));
         protocolDecoderOutput.write(responseMsg);
     }
+
 
     @Override
     public void finishDecode(IoSession ioSession, ProtocolDecoderOutput protocolDecoderOutput) throws Exception {
