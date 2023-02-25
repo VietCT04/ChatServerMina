@@ -19,7 +19,6 @@ public class XMLDecoder implements ProtocolDecoder {
      */
     @Override
     public void decode(IoSession ioSession, IoBuffer ioBuffer, ProtocolDecoderOutput protocolDecoderOutput) throws Exception {
-        System.out.println("Message in: ");
         byte receivedBytes[] = ioBuffer.array();
         int remainingData = ioBuffer.remaining();
         while (remainingData > 0){

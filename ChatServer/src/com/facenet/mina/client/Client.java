@@ -84,8 +84,9 @@ public class Client {
         while (true){
             String message = in.nextLine();
             session.write(message);
-            if (message == "/quit") break;
+            if (message.equals("/quit")) break;
         }
+        session.close();
         session.getCloseFuture().awaitUninterruptibly();
 
         connector.dispose();

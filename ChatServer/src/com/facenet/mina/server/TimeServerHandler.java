@@ -19,7 +19,7 @@ public class TimeServerHandler extends IoHandlerAdapter
         allowIp.add("127.0.0.2");
     }
 
-    private final int ipOccurrenceLimit = 1;
+    private final int ipOccurrenceLimit = 2;
     private ArrayList<String> allowIp = new ArrayList<String>();
 
     private HashMap<String,Integer> ipOccurrence = new HashMap<String, Integer>();
@@ -63,7 +63,8 @@ public class TimeServerHandler extends IoHandlerAdapter
         System.out.println(str);
         Date date = new Date();
         session.write( date.toString() );
-        broadcast(str, session);
+        if (str.equals("/quit")) sessionClosed(session);
+        else broadcast(str, session);
     }
 
     /**
@@ -115,6 +116,13 @@ public class TimeServerHandler extends IoHandlerAdapter
                 ipOccurrence.put(clientIP, currentIpOcc + 1);
             }
         } else{
+            int currentIpOcc = 0;
+            if (ipOccurrence.get(clientIP) != null){
+                currentIpOcc = ipOccurrence.get(clientIP);
+                ipOccurrence.put(clientIP, currentIpOcc + 1);
+            } else {
+                ipOccurrence.put(clientIP, currentIpOcc + 1);
+            }
             System.out.println("NOT ALLOW CONNECTION FROM " + clientIP);
             session.close();
         }
@@ -124,7 +132,15 @@ public class TimeServerHandler extends IoHandlerAdapter
     // This method invoked when close a session (IoSession)
     @Override
     public void sessionClosed(IoSession session) throws Exception {
+        String clientIP = session.getRemoteAddress().toString().split(":")[0].substring(1);
         System.out.println("sessionClosed ");
+        int currentIpOcc = 0;
+        if (ipOccurrence.get(clientIP) != null){
+            currentIpOcc = ipOccurrence.get(clientIP);
+            ipOccurrence.put(clientIP, currentIpOcc - 1);
+        } else {
+            ipOccurrence.put(clientIP, currentIpOcc - 1);
+        }
     }
 
     // This method invoked when a session opened (IoSession)
