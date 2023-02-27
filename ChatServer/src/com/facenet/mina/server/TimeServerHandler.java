@@ -135,6 +135,7 @@ public class TimeServerHandler extends IoHandlerAdapter
         String clientIP = session.getRemoteAddress().toString().split(":")[0].substring(1);
         System.out.println("sessionClosed ");
         int currentIpOcc = 0;
+        sessions.remove(session);
         if (ipOccurrence.get(clientIP) != null){
             currentIpOcc = ipOccurrence.get(clientIP);
             ipOccurrence.put(clientIP, currentIpOcc - 1);
